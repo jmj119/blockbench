@@ -20,29 +20,28 @@ if ! [ -d "$HL_DATA" ]; then
 fi
 cd $HL_DATA
 
-GOTAR="go1.9.3.linux-$ARCH.tar.gz"
+GOTAR="go1.10.4.linux-$ARCH.tar.gz"
 wget https://storage.googleapis.com/golang/$GOTAR
 tar -zxvf $GOTAR
 export GOPATH=`pwd`/go
 export PATH=$PATH:`pwd`/go/bin
 
-git clone https://github.com/facebook/rocksdb.git
-cd rocksdb
-git checkout v4.1
-PORTABLE=1 make shared_lib
-sudo INSTALL_PATH=/usr/local make install-shared
+git clone https://github.com/google/leveldb.git
+cd leveldb
+git checkout v1.20
+make
+sudo scp out-static/lib* out-shared/lib* /usr/local/lib
+sudo scp -r include/leveldb /usr/local/include
 
 cd $HL_DATA/go
 mkdir -p src/github.com/hyperledger
 cd src/github.com/hyperledger
 if [ $ARCH == "arm64" ]; then
-	git clone https://github.com/dloghin/fabric.git
+    git clone https://github.com/jmj119/fabric.git
 	cd fabric
-	git checkout v0.6_blockbench
 else
-	git clone https://github.com/hyperledger/fabric
+    git clone https://github.com/jmj119/fabric.git
 	cd fabric
-	git checkout e728c5c22160620e189e85be6becb7cbf75d87dc
 fi
 cp $HL_HOME/hl_core.yaml peer/core.yaml
 make peer
