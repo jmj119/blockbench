@@ -43,5 +43,5 @@ else
     git clone https://github.com/jmj119/fabric.git
 	cd fabric
 fi
-cp $HL_HOME/hl_core.yaml peer/core.yaml
-make peer
+#cp $HL_HOME/hl_core.yaml peer/core.yaml
+make native
